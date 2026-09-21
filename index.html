@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SIPMitra - Free SIP Calculator</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #ffffff;
+      padding: 18px 20px;
+      border-bottom: 1px solid #e5e7eb;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav {
+      max-width: 1050px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      color: #1769e0;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #374151;
+      font-size: 14px;
+      margin-left: 15px;
+    }
+
+    .hero {
+      max-width: 1050px;
+      margin: auto;
+      padding: 55px 20px 30px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #667085;
+      font-size: 17px;
+      max-width: 650px;
+      margin: auto;
+    }
+
+    .calculator {
+      max-width: 650px;
+      margin: 25px auto 50px;
+      background: white;
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    }
+
+    .calculator h2 {
+      margin-bottom: 22px;
+      font-size: 24px;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 7px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d5d9e2;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: none;
+      border-radius: 9px;
+      background: #1769e0;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1257bd;
+    }
+
+    .results {
+      margin-top: 25px;
+      display: none;
+    }
+
+    .result-box {
+      background: #f3f7ff;
+      padding: 15px;
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+
+    .result-box span {
+      display: block;
+      color: #667085;
+      font-size: 14px;
+    }
+
+    .result-box strong {
+      font-size: 21px;
+    }
+
+    .info {
+      max-width: 1050px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .info h2 {
+      margin-bottom: 15px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card h3 {
+      margin-bottom: 7px;
+    }
+
+    .card p {
+      color: #667085;
+      font-size: 14px;
+    }
+
+    .disclaimer {
+      max-width: 1050px;
+      margin: 35px auto;
+      padding: 20px;
+      font-size: 13px;
+      color: #667085;
+    }
+
+    footer {
+      background: #172033;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: 30px;
+    }
+
+    @media (max-width: 700px) {
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .nav a {
+        display: none;
+      }
+
+      .calculator {
+        margin-left: 15px;
+        margin-right: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logo">SIPMitra</div>
+    <div>
+      <a href="#calculator">SIP Calculator</a>
+      <a href="#learn">Learn</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Plan Your SIP Easily</h1>
+  <p>
+    Use our free SIP calculator to estimate your investment value,
+    total investment and potential returns.
+  </p>
+</section>
+
+<section class="calculator" id="calculator">
+
+  <h2>📈 SIP Calculator</h2>
+
+  <label for="monthly">Monthly SIP Amount (₹)</label>
+  <input id="monthly" type="number" value="5000" min="1">
+
+  <label for="rate">Expected Annual Return (%)</label>
+  <input id="rate" type="number" value="12" min="0" step="0.1">
+
+  <label for="years">Investment Duration (Years)</label>
+  <input id="years" type="number" value="10" min="1">
+
+  <button onclick="calculateSIP()">Calculate SIP</button>
+
+  <div class="results" id="results">
+
+    <div class="result-box">
+      <span>Total Invested</span>
+      <strong id="invested">₹0</strong>
+    </div>
+
+    <div class="result-box">
+      <span>Estimated Returns</span>
+      <strong id="returns">₹0</strong>
+    </div>
+
+    <div class="result-box">
+      <span>Estimated Future Value</span>
+      <strong id="future">₹0</strong>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="info" id="learn">
+
+  <h2>Learn About Investing</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>What is SIP?</h3>
+      <p>
+        SIP means Systematic Investment Plan. It allows an investor
+        to invest a fixed amount at regular intervals.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>What is Compounding?</h3>
+      <p>
+        Compounding means your returns can themselves generate
+        additional returns over time.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Start With Knowledge</h3>
+      <p>
+        Understand risk, returns, time horizon and investment goals
+        before making financial decisions.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+<div class="disclaimer">
+  <strong>Disclaimer:</strong>
+  This calculator provides an illustration based on the values entered by the user.
+  Actual mutual fund returns are market-linked and are not guaranteed.
+  This website does not provide personalized investment advice.
+</div>
+
+<footer>
+  <p>© 2026 SIPMitra. All rights reserved.</p>
+</footer>
+
+<script>
+  function formatRupee(number) {
+    return "₹" + Math.round(number).toLocaleString("en-IN");
+  }
+
+  function calculateSIP() {
+
+    const monthly = Number(document.getElementById("monthly").value);
+    const annualRate = Number(document.getElementById("rate").value);
+    const years = Number(document.getElementById("years").value);
+
+    if (monthly <= 0 || annualRate < 0 || years <= 0) {
+      alert("Please enter valid values.");
+      return;
+    }
+
+    const months = years * 12;
+    const monthlyRate = annualRate / 12 / 100;
+
+    let futureValue;
+
+    if (monthlyRate === 0) {
+      futureValue = monthly * months;
+    } else {
+      futureValue =
+        monthly *
+        (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
+        (1 + monthlyRate));
+    }
+
+    const invested = monthly * months;
+    const returns = futureValue - invested;
+
+    document.getElementById("invested").textContent =
+      formatRupee(invested);
+
+    document.getElementById("returns").textContent =
+      formatRupee(returns);
+
+    document.getElementById("future").textContent =
+      formatRupee(futureValue);
+
+    document.getElementById("results").style.display = "block";
+  }
+
+  calculateSIP();
+</script>
+
+</body>
+  </html>
