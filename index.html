@@ -350,9 +350,154 @@
       formatRupee(futureValue);
 
     document.getElementById("results").style.display = "block";
+    createGrowthChart(monthly, annualRate, years);
   }
 
   calculateSIP();
+  // SIP Growth Chart
+function createGrowthChart(monthly, annualRate, years) {
+
+  let oldChart = document.getElementById("sipGrowthCard");
+
+  if (oldChart) {
+    oldChart.remove();
+  }
+
+  const card = document.createElement("div");
+  card.id = "sipGrowthCard";
+
+  card.style.cssText =
+    "max-width:650px;margin:25px auto;background:white;padding:28px;border-radius:18px;box-shadow:0 8px 30px rgba(0,0,0,.08);";
+
+  card.innerHTML = `
+    <h2 style="margin-top:0;">SIP Growth Chart</h2>
+    <p style="color:#667085;">
+      Estimated growth of your SIP over time.
+    </p>
+    <canvas id="sipChart" width="600" height="300"
+      style="width:100%;height:auto;"></canvas>
+  `;
+
+  document.body.insertBefore(card, document.currentScript);
+
+  const canvas = document.getElementById("sipChart");
+  const ctx = canvas.getContext("2d");
+
+  const width = canvas.width;
+  const height = canvas.height;
+
+  const values = [];
+
+  const monthlyRate = annualRate / 12 / 100;
+
+  for (let year = 0; year <= years; year++) {
+
+    const months = year * 12;
+    let value = 0;
+
+    if (months > 0) {
+
+      if (monthlyRate === 0) {
+        value = monthly * months;
+      } else {
+        value =
+          monthly *
+          (
+            (Math.pow(1 + monthlyRate, months) - 1)
+            / monthlyRate
+          ) *
+          (1 + monthlyRate);
+      }
+    }
+
+    values.push(value);
+  }
+
+  const maxValue = Math.max(...values, 1);
+
+  ctx.clearRect(0, 0, width, height);
+
+  const left = 55;
+  const right = 20;
+  const top = 20;
+  const bottom = 40;
+
+  const chartWidth = width - left - right;
+  const chartHeight = height - top - bottom;
+
+  // Grid lines
+  ctx.strokeStyle = "#d9dee8";
+  ctx.lineWidth = 1;
+
+  for (let i = 0; i <= 5; i++) {
+
+    const y =
+      top + chartHeight - (chartHeight * i / 5);
+
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(width - right, y);
+    ctx.stroke();
+  }
+
+  // Growth line
+  ctx.beginPath();
+
+  values.forEach((value, index) => {
+
+    const x =
+      left + (chartWidth * index / years);
+
+    const y =
+      top +
+      chartHeight -
+      (value / maxValue) * chartHeight;
+
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+
+  ctx.strokeStyle = "#1769e0";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  // Points
+  values.forEach((value, index) => {
+
+    const x =
+      left + (chartWidth * index / years);
+
+    const y =
+      top +
+      chartHeight -
+      (value / maxValue) * chartHeight;
+
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = "#1769e0";
+    ctx.fill();
+  });
+
+  // Year labels
+  ctx.fillStyle = "#667085";
+  ctx.font = "13px Arial";
+  ctx.textAlign = "center";
+
+  for (let i = 0; i <= years; i++) {
+
+    const x =
+      left + (chartWidth * i / years);
+
+    ctx.fillText(
+      i + "Y",
+      x,
+      height - 12
+    );
+  }
+}
 </script>
 
 </body>
